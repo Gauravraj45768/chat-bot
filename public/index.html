@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ChatGPT Bot</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; }
+    #log { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    input, button { margin-top: 10px; width: 100%; }
+  </style>
+</head>
+<body>
+  <h2>Chat with ChatGPT</h2>
+  <div id="log"></div>
+  <input type="text" id="msg" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
+
+  <script>
+    const socket = new WebSocket('ws://' + location.host);
+
+    socket.onmessage = (event) => {
+      log('🤖 ' + event.data);
+    };
+
+    function sendMessage() {
+      const input = document.getElementById('msg');
+      const message = input.value;
+      if (message.trim()) {
+        log('🧑 ' + message);
+        socket.send(message);
+        input.value = '';
+      }
+    }
+
+    function log(message) {
+      const logDiv = document.getElementById('log');
+      const p = document.createElement('p');
+      p.textContent = message;
+      logDiv.appendChild(p);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+  </script>
+</body>
+</html>
